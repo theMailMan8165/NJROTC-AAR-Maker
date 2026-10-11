@@ -1,96 +1,1560 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>After-Action Report Builder</title>
-<style>
-:root{--navy:#183b63;--blue:#2f6fed;--bg:#f4f6fa;--ink:#202733;--muted:#667085;--line:#dce2eb;--card:#fff;--green:#18845b}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,Helvetica,sans-serif;color:var(--ink);line-height:1.45}
-header{background:var(--navy);color:#fff;padding:20px max(20px,calc((100vw - 1000px)/2));display:flex;align-items:center;gap:14px}
-.logo{width:42px;height:42px;border-radius:12px;background:#fff;color:var(--navy);display:grid;place-items:center;font-size:23px;font-weight:bold}
-header h1{font-size:20px;margin:0}header p{margin:3px 0 0;color:#d9e5f5;font-size:13px}
-nav{display:flex;gap:8px;max-width:1000px;margin:20px auto 0;padding:0 16px}
-.tab{border:1px solid var(--line);background:#fff;border-radius:9px;padding:10px 15px;font-weight:700;color:#344054;cursor:pointer}.tab.active{background:var(--blue);border-color:var(--blue);color:#fff}
-main{max-width:1000px;margin:16px auto 48px;padding:0 16px}.hero{background:#e8effb;border-left:5px solid var(--blue);padding:17px 20px;border-radius:10px;margin-bottom:16px}.hero h2{margin:0 0 4px;font-size:21px}.hero p{margin:0;color:#475467}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:16px;align-items:start}.panel,.section{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}.panelhead{padding:17px 20px;border-bottom:1px solid var(--line)}.panelhead h3{margin:0;font-size:17px}.panelbody{padding:20px}.section{margin-bottom:14px}.sectionhead{background:#f9fafc;padding:13px 17px;border-bottom:1px solid var(--line);font-weight:700}.sectionbody{padding:17px}
-label{display:block;font-size:14px;font-weight:700;margin:0 0 7px}input,select,textarea{font:inherit;width:100%;border:1px solid #cbd3df;border-radius:7px;padding:11px 12px;background:#fff;color:var(--ink)}textarea{min-height:94px;resize:vertical}input:focus,select:focus,textarea:focus{outline:2px solid #b6ccff;border-color:var(--blue)}.field{margin-bottom:18px}.field:last-child{margin-bottom:0}.hint{font-size:12px;color:var(--muted);margin-top:5px}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px}.choices{display:grid;gap:9px}.choice{display:flex;align-items:flex-start;gap:9px;font-weight:400;margin:0}.choice input{width:auto;margin-top:4px}
-.side{position:sticky;top:14px}.side .panelbody{padding:16px}.status{font-size:13px;color:var(--muted);margin:8px 0 14px}.btn{border:0;border-radius:8px;padding:11px 14px;font:inherit;font-weight:700;cursor:pointer}.primary{background:var(--blue);color:white}.secondary{background:#edf2f8;color:#344054;border:1px solid var(--line)}.danger{background:#fff0f0;color:#b42318;border:1px solid #f4c7c7}.btnblock{width:100%;margin-bottom:9px}.small{font-size:12px;color:var(--muted)}.hidden{display:none!important}
-.historyitem{border:1px solid var(--line);padding:15px;border-radius:10px;margin-bottom:10px;background:#fff}.historyitem h3{margin:0 0 5px;font-size:16px}.meta{color:var(--muted);font-size:13px;margin-bottom:12px}.historyactions{display:flex;gap:8px;flex-wrap:wrap}.empty{text-align:center;padding:45px 15px;color:var(--muted)}.empty strong{display:block;color:#344054;margin-bottom:5px}.tag{display:inline-block;border-radius:20px;padding:3px 9px;background:#e8effb;color:#244d88;font-size:12px;font-weight:700}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
-@media(max-width:760px){.layout{grid-template-columns:1fr}.side{position:static;order:-1}.twocol{grid-template-columns:1fr}nav{overflow:auto}.tab{white-space:nowrap}header{padding:16px}.panelbody{padding:15px}.sectionbody{padding:14px}}
-@media print{header,nav,.side,.hero,.no-print,footer{display:none!important}body{background:#fff}.layout{display:block}main{max-width:none;margin:0;padding:0}.panel,.section{border:0;break-inside:avoid}.panelhead,.sectionhead{background:#fff}.panelbody{padding:10px 0}input,select,textarea{border:0;padding:0;appearance:none}.field{margin-bottom:10px}textarea{min-height:45px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>After-Action Report Builder</title>
+
+    <style>
+        :root {
+            --navy: #183b63;
+            --blue: #2f6fed;
+            --bg: #f4f6fa;
+            --ink: #202733;
+            --muted: #667085;
+            --line: #dce2eb;
+            --card: #fff;
+            --green: #18845b;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            font-family: Arial, Helvetica, sans-serif;
+            color: var(--ink);
+            line-height: 1.45;
+        }
+
+        header {
+            background: var(--navy);
+            color: #fff;
+            padding: 20px max(20px, calc((100vw - 1000px) / 2));
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #fff;
+            color: var(--navy);
+            display: grid;
+            place-items: center;
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        header h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+
+        header p {
+            margin: 3px 0 0;
+            color: #d9e5f5;
+            font-size: 13px;
+        }
+
+        nav {
+            display: flex;
+            gap: 8px;
+            max-width: 1000px;
+            margin: 20px auto 0;
+            padding: 0 16px;
+        }
+
+        .tab {
+            border: 1px solid var(--line);
+            background: #fff;
+            border-radius: 9px;
+            padding: 10px 15px;
+            font-weight: 700;
+            color: #344054;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background: var(--blue);
+            border-color: var(--blue);
+            color: #fff;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 16px auto 48px;
+            padding: 0 16px;
+        }
+
+        .hero {
+            background: #e8effb;
+            border-left: 5px solid var(--blue);
+            padding: 17px 20px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+
+        .hero h2 {
+            margin: 0 0 4px;
+            font-size: 21px;
+        }
+
+        .hero p {
+            margin: 0;
+            color: #475467;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 270px;
+            gap: 16px;
+            align-items: start;
+        }
+
+        .panel,
+        .section {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .panelhead {
+            padding: 17px 20px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .panelhead h3 {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .panelbody {
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 14px;
+        }
+
+        .sectionhead {
+            background: #f9fafc;
+            padding: 13px 17px;
+            border-bottom: 1px solid var(--line);
+            font-weight: 700;
+        }
+
+        .sectionbody {
+            padding: 17px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin: 0 0 7px;
+        }
+
+        input,
+        select,
+        textarea {
+            font: inherit;
+            width: 100%;
+            border: 1px solid #cbd3df;
+            border-radius: 7px;
+            padding: 11px 12px;
+            background: #fff;
+            color: var(--ink);
+        }
+
+        textarea {
+            min-height: 94px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid #b6ccff;
+            border-color: var(--blue);
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        .twocol {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .choices {
+            display: grid;
+            gap: 9px;
+        }
+
+        .choice {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            font-weight: 400;
+            margin: 0;
+        }
+
+        .choice input {
+            width: auto;
+            margin-top: 4px;
+        }
+
+        .side {
+            position: sticky;
+            top: 14px;
+        }
+
+        .side .panelbody {
+            padding: 16px;
+        }
+
+        .status {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 8px 0 14px;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 8px;
+            padding: 11px 14px;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: var(--blue);
+            color: white;
+        }
+
+        .secondary {
+            background: #edf2f8;
+            color: #344054;
+            border: 1px solid var(--line);
+        }
+
+        .danger {
+            background: #fff0f0;
+            color: #b42318;
+            border: 1px solid #f4c7c7;
+        }
+
+        .btnblock {
+            width: 100%;
+            margin-bottom: 9px;
+        }
+
+        .small {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .historyitem {
+            border: 1px solid var(--line);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            background: #fff;
+        }
+
+        .historyitem h3 {
+            margin: 0 0 5px;
+            font-size: 16px;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .historyactions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 45px 15px;
+            color: var(--muted);
+        }
+
+        .empty strong {
+            display: block;
+            color: #344054;
+            margin-bottom: 5px;
+        }
+
+        .tag {
+            display: inline-block;
+            border-radius: 20px;
+            padding: 3px 9px;
+            background: #e8effb;
+            color: #244d88;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            padding: 20px;
+        }
+
+        @media (max-width: 760px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .side {
+                position: static;
+                order: -1;
+            }
+
+            .twocol {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                overflow: auto;
+            }
+
+            .tab {
+                white-space: nowrap;
+            }
+
+            header {
+                padding: 16px;
+            }
+
+            .panelbody {
+                padding: 15px;
+            }
+
+            .sectionbody {
+                padding: 14px;
+            }
+        }
+
+        @media print {
+            header,
+            nav,
+            .side,
+            .hero,
+            .no-print,
+            footer {
+                display: none !important;
+            }
+
+            body {
+                background: #fff;
+            }
+
+            .layout {
+                display: block;
+            }
+
+            main {
+                max-width: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .panel,
+            .section {
+                border: 0;
+                break-inside: avoid;
+            }
+
+            .panelhead,
+            .sectionhead {
+                background: #fff;
+            }
+
+            .panelbody {
+                padding: 10px 0;
+            }
+
+            input,
+            select,
+            textarea {
+                border: 0;
+                padding: 0;
+                appearance: none;
+            }
+
+            .field {
+                margin-bottom: 10px;
+            }
+
+            textarea {
+                min-height: 45px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-<header><div class="logo">A</div><div><h1>After-Action Report Builder</h1><p>Event documentation · Review · Lessons learned</p></div></header>
-<nav aria-label="Main navigation"><button class="tab active" id="newTab">＋ New report</button><button class="tab" id="historyTab">▤ Report history <span id="historyCount"></span></button></nav>
-<main>
-<section id="editorView">
-<div class="hero"><h2>Create an after-action report</h2><p>Choose an event template, document what happened, and capture improvements for next time.</p></div>
-<div class="layout">
-<div class="panel"><div class="panelhead"><h3 id="formTitle">New report</h3></div><div class="panelbody">
-<form id="aarForm">
-<div class="section"><div class="sectionhead">1. Event information</div><div class="sectionbody">
-<div class="field"><label for="template">Event template *</label><select id="template" required><option value="community">Community service</option><option value="football">Football game / sports event</option><option value="njrotc">NJROTC activity / detail</option><option value="competition">Competition / meet</option><option value="general">General event</option></select><div class="hint">The template changes the questions below to match your event.</div></div>
-<div class="field"><label for="eventName">Event name *</label><input id="eventName" required placeholder="e.g., Homecoming football game"></div>
-<div class="twocol"><div class="field"><label for="eventDate">Event date *</label><input id="eventDate" type="date" required></div><div class="field"><label for="location">Location</label><input id="location" placeholder="Venue or meeting point"></div></div>
-<div class="twocol"><div class="field"><label for="preparedBy">Report prepared by *</label><input id="preparedBy" required placeholder="Name / role"></div><div class="field"><label for="organization">Unit / organization</label><input id="organization" placeholder="e.g., NJROTC unit"></div></div>
-<div class="field"><label for="participants">Participants / team involved</label><input id="participants" placeholder="People, teams, departments, or groups"></div>
-</div></div>
-<div id="dynamicSections"></div>
-<div class="section"><div class="sectionhead">Final review</div><div class="sectionbody">
-<div class="field"><label for="lessons">Lessons learned *</label><textarea id="lessons" required placeholder="What should the team remember for next time?"></textarea></div>
-<div class="field"><label for="recommendations">Recommendations / follow-up actions</label><textarea id="recommendations" placeholder="What should change, who should follow up, and by when?"></textarea></div>
-<div class="field"><label for="overall">Overall assessment</label><select id="overall"><option value="">Select an assessment</option><option>Exceeded expectations</option><option>Met expectations</option><option>Partially met expectations</option><option>Did not meet expectations</option><option>Not applicable</option></select></div>
-<div class="field"><label for="additional">Additional notes</label><textarea id="additional" placeholder="Any other information worth recording"></textarea></div>
-</div></div>
-<div class="no-print" style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary" type="submit">Save report</button><button class="btn secondary" type="button" id="previewBtn">Print / save as PDF</button><button class="btn secondary" type="button" id="clearBtn">Clear form</button></div>
-<p class="small">Reports are saved in this browser on this device. Clearing browser site data may remove them.</p>
-</form>
-</div></div>
-<aside class="side"><div class="panel"><div class="panelhead"><h3>Report checklist</h3></div><div class="panelbody"><div class="tag">AAR WORKSPACE</div><p class="status" id="progressText">Complete the required fields to prepare your report.</p><div style="height:7px;background:#e9edf4;border-radius:10px;overflow:hidden"><div id="progressBar" style="height:100%;width:0;background:#2f6fed"></div></div><hr style="border:0;border-top:1px solid var(--line);margin:17px 0"><p class="small">Suggested workflow</p><ol class="small" style="padding-left:18px;line-height:1.8"><li>Choose the closest event template.</li><li>Record facts and outcomes.</li><li>Identify successes and challenges.</li><li>Write specific next steps.</li><li>Save and export a PDF copy.</li></ol><button type="button" class="btn secondary btnblock" id="saveDraftBtn">Save draft</button></div></div></aside>
-</div>
-</section>
-<section id="historyView" class="hidden">
-<div class="hero"><h2>Report history</h2><p>Browse, reopen, print, or remove reports saved in this browser.</p></div>
-<div class="panel"><div class="panelbody"><div class="twocol" style="margin-bottom:18px"><div><label for="searchHistory">Search reports</label><input id="searchHistory" placeholder="Search event, author, location…"></div><div><label for="filterHistory">Filter by template</label><select id="filterHistory"><option value="">All event types</option><option value="community">Community service</option><option value="football">Football / sports</option><option value="njrotc">NJROTC activity</option><option value="competition">Competition / meet</option><option value="general">General event</option></select></div></div><div id="historyList"></div></div></div>
-</section>
-</main><footer>After-Action Report Builder · Local-first prototype for organizational use</footer>
-<script>
-const STORAGE_KEY='aarBuilderReportsV1';
-const templateNames={community:'Community service',football:'Football game / sports event',njrotc:'NJROTC activity / detail',competition:'Competition / meet',general:'General event'};
-const schemas={
-community:[{title:'2. Mission and service impact',fields:[['objectives','What were the goals of the service event?','textarea','Describe the intended impact.'],['work','What work was completed?','textarea','Tasks completed, supplies distributed, area served, etc.'],['impact','Who or what benefited, and what was the impact?','textarea','Include counts or measurable outcomes when known.'],['hours','Volunteer hours / quantity served','text','e.g., 18 volunteers, 42 total hours, 200 lb of food']]} ,{title:'3. Execution and coordination',fields:[['coordination','How well did planning, communication, and coordination work?','textarea','What helped the team work effectively?'],['resources','Were supplies, transportation, and staffing sufficient?','choice','']]}],
-football:[{title:'2. Game overview and objectives',fields:[['opponent','Opponent / event matchup','text','Opponent or teams involved'],['result','Final score / result','text','Optional; include only if relevant'],['objectives','What were the team’s goals going into the event?','textarea','Performance, teamwork, execution, sportsmanship, or event support.'],['outcome','How did the event compare with those goals?','textarea','Summarize the outcome and key factors.']]},{title:'3. Performance and operations',fields:[['successes','What went well?','textarea','Preparation, communication, teamwork, execution, fan or event operations.'],['challenges','What challenges or turning points occurred?','textarea','Focus on relevant facts and what the team learned.'],['sportsmanship','Sportsmanship, safety, and conduct observations','textarea','Record notable positives or areas for improvement.']]}],
-njrotc:[{title:'2. Mission and execution',fields:[['mission','What was the mission or purpose of the activity?','textarea','What were cadets expected to accomplish?'],['execution','How was the mission carried out?','textarea','Sequence of events, assigned roles, and execution.'],['personnel','Personnel, leadership, and accountability','textarea','Attendance, role assignments, supervision, and coordination.']]},{title:'3. Standards and performance',fields:[['successes','What went well?','textarea','Preparation, bearing, teamwork, drill, communication, etc.'],['challenges','What issues or deviations occurred?','textarea','Document facts and corrective actions without unnecessary personal details.'],['resources','Were equipment, uniforms, supplies, and time adequate?','choice','']]}],
-competition:[{title:'2. Competition objectives and results',fields:[['eventDetails','Competition, division, and events entered','textarea','List teams, categories, events, or divisions.'],['results','Results / placements / scores','textarea','Record verified results if available.'],['objectives','What were the goals, and how were they met?','textarea','Include preparation goals and performance targets.']]},{title:'3. Team performance and preparation',fields:[['strengths','What skills or team practices worked well?','textarea','Preparation, consistency, strategy, teamwork, and execution.'],['gaps','What needs more practice or support?','textarea','Identify specific skills, resources, or coordination gaps.'],['logistics','How effective were travel, scheduling, equipment, and check-in?','textarea','What should be repeated or changed?']]}],
-general:[{title:'2. Objectives and execution',fields:[['objectives','What were the event’s objectives?','textarea','What was supposed to happen?'],['execution','What happened during the event?','textarea','Summarize the major activities and sequence.'],['outcome','What were the outcomes?','textarea','Include measurable results when possible.']]},{title:'3. Evaluation',fields:[['successes','What went well?','textarea','What should be repeated?'],['challenges','What did not go as planned?','textarea','Describe issues and their impact.'],['coordination','How effective were communication and coordination?','textarea','What would improve execution next time?']]}]
-};
-let editingId=null;
-const $=id=>document.getElementById(id);
-function makeField(f){const [id,label,type,placeholder]=f;let control='';if(type==='textarea')control=`<textarea id="${id}" placeholder="${esc(placeholder)}"></textarea>`;else if(type==='choice')control=`<div class="choices"><label class="choice"><input type="radio" name="${id}" value="Yes"> Yes</label><label class="choice"><input type="radio" name="${id}" value="Partly"> Partly</label><label class="choice"><input type="radio" name="${id}" value="No"> No</label><label class="choice"><input type="radio" name="${id}" value="Not applicable"> Not applicable</label></div>`;else control=`<input id="${id}" placeholder="${esc(placeholder)}">`;return `<div class="field"><label for="${id}">${esc(label)}</label>${control}</div>`}
-function renderTemplate(){const t=$('template').value;$('dynamicSections').innerHTML=schemas[t].map(s=>`<div class="section"><div class="sectionhead">${esc(s.title)}</div><div class="sectionbody">${s.fields.map(makeField).join('')}</div></div>`).join('');}
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function getReports(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch{return []}}
-function setReports(r){localStorage.setItem(STORAGE_KEY,JSON.stringify(r));updateCount()}
-function updateCount(){$('historyCount').textContent=getReports().length?`(${getReports().length})`:''}
-function collect(){const data={};['template','eventName','eventDate','location','preparedBy','organization','participants','lessons','recommendations','overall','additional'].forEach(id=>data[id]=$(id).value);schemas[data.template].forEach(s=>s.fields.forEach(f=>{const id=f[0];const radio=document.querySelector(`input[name="${id}"]:checked`);const el=$(id);data[id]=radio?radio.value:(el?el.value:'')}));return data}
-function fill(data){editingId=data.id||null;renderTemplate();Object.keys(data).forEach(id=>{const el=$(id);if(el&&el.type!=='radio')el.value=data[id]??'';if(['resources'].includes(id)){const r=document.querySelector(`input[name="${id}"][value="${CSS.escape(data[id]||'')}"]`);if(r)r.checked=true;}});schemas[$('template').value].forEach(s=>s.fields.forEach(f=>{const id=f[0];const r=document.querySelector(`input[name="${id}"][value="${CSS.escape(data[id]||'')}"]`);if(r)r.checked=true}));$('formTitle').textContent=editingId?'Edit report':'New report';window.scrollTo({top:0,behavior:'smooth'});updateProgress()}
-function clearForm(){editingId=null;$('aarForm').reset();$('template').value='community';renderTemplate();$('formTitle').textContent='New report';updateProgress()}
-function switchView(which){const hist=which==='history';$('editorView').classList.toggle('hidden',hist);$('historyView').classList.toggle('hidden',!hist);$('newTab').classList.toggle('active',!hist);$('historyTab').classList.toggle('active',hist);if(hist)renderHistory();window.scrollTo({top:0,behavior:'smooth'})}
-function renderHistory(){const query=$('searchHistory').value.toLowerCase();const filter=$('filterHistory').value;const arr=getReports().filter(r=>(!filter||r.template===filter)&&JSON.stringify([r.eventName,r.preparedBy,r.location,r.organization,templateNames[r.template]]).toLowerCase().includes(query)).sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));$('historyList').innerHTML=arr.length?arr.map(r=>`<article class="historyitem"><h3>${esc(r.eventName||'Untitled event')}</h3><div class="meta">${esc(templateNames[r.template]||'Event')} · ${esc(r.eventDate||'No date')} · Prepared by ${esc(r.preparedBy||'Not specified')} ${r.location?'· '+esc(r.location):''}</div><div class="historyactions"><button class="btn secondary" data-action="open" data-id="${esc(r.id)}">Open / edit</button><button class="btn secondary" data-action="pdf" data-id="${esc(r.id)}">Print / PDF</button><button class="btn danger" data-action="delete" data-id="${esc(r.id)}">Delete</button></div></article>`).join(''):`<div class="empty"><strong>No reports found</strong>Create and save a report to see it here.</div>`;updateCount()}
-function printReport(data){const win=window.open('','_blank');if(!win){alert('Please allow pop-ups to export/print the report.');return}const sections=schemas[data.template]||schemas.general;let body=`<h1>After-Action Report</h1><h2>${esc(data.eventName)}</h2><p><b>Event type:</b> ${esc(templateNames[data.template])} &nbsp; <b>Date:</b> ${esc(data.eventDate)}</p><p><b>Location:</b> ${esc(data.location)} &nbsp; <b>Prepared by:</b> ${esc(data.preparedBy)}</p><p><b>Organization:</b> ${esc(data.organization)} &nbsp; <b>Participants:</b> ${esc(data.participants)}</p>`;const labels={};document.querySelectorAll('label').forEach(l=>{if(l.htmlFor)labels[l.htmlFor]=l.textContent});const add=(title,ids)=>{body+=`<h3>${esc(title)}</h3>`;ids.forEach(id=>{let label=labels[id]||id;body+=`<p><b>${esc(label)}</b><br>${esc(data[id]||'—').replace(/\n/g,'<br>')}</p>`})};sections.forEach(s=>add(s.title,s.fields.map(f=>f[0])));add('Final review',['lessons','recommendations','overall','additional']);win.document.write(`<!doctype html><html><head><title>${esc(data.eventName)} — AAR</title><style>body{font:14px Arial;max-width:800px;margin:36px auto;color:#202733;line-height:1.5}h1{color:#183b63;border-bottom:3px solid #2f6fed;padding-bottom:10px}h2{margin-bottom:4px}h3{background:#edf2f8;padding:8px;margin-top:24px}p{margin:12px 0}@media print{body{margin:15mm}}</style></head><body>${body}<script>window.onload=()=>window.print()<\/script></body></html>`);win.document.close()}
-$('template').addEventListener('change',()=>{renderTemplate();updateProgress()});
-$('aarForm').addEventListener('input',updateProgress);
-function updateProgress(){const required=[$('eventName'),$('eventDate'),$('preparedBy'),$('lessons')];const filled=required.filter(e=>e.value.trim()).length;const pct=Math.round(filled/required.length*100);$('progressBar').style.width=pct+'%';$('progressText').textContent=`${filled} of ${required.length} required fields complete (${pct}%).`}
-$('aarForm').addEventListener('submit',e=>{e.preventDefault();saveReport()});
-function saveReport(){if(!$('aarForm').reportValidity())return;const data=collect();const arr=getReports();const now=new Date().toISOString();if(editingId){const i=arr.findIndex(r=>r.id===editingId);if(i>=0)arr[i]={...arr[i],...data,updatedAt:now};else arr.unshift({...data,id:editingId,createdAt:now,updatedAt:now})}else{data.id=crypto.randomUUID?crypto.randomUUID():String(Date.now());data.createdAt=now;data.updatedAt=now;arr.unshift(data);editingId=data.id}$('formTitle').textContent='Report saved';setReports(arr);alert('Report saved in this browser.');}
-$('saveDraftBtn').addEventListener('click',()=>{const data=collect();if(!data.eventName.trim()){alert('Add an event name before saving a draft.');return}const arr=getReports(),now=new Date().toISOString();if(editingId){const i=arr.findIndex(r=>r.id===editingId);if(i>=0)arr[i]={...arr[i],...data,updatedAt:now};else arr.unshift({...data,id:editingId,createdAt:now,updatedAt:now})}else{data.id=crypto.randomUUID?crypto.randomUUID():String(Date.now());data.createdAt=now;data.updatedAt=now;arr.unshift(data);editingId=data.id}setReports(arr);alert('Draft saved locally.');});
-$('previewBtn').addEventListener('click',()=>{const d=collect();if(!d.eventName.trim()){alert('Enter an event name before exporting.');return}printReport({...d,id:editingId})});
-$('clearBtn').addEventListener('click',()=>{if(confirm('Clear the current form? Unsaved changes will be lost.'))clearForm()});
-$('newTab').addEventListener('click',()=>switchView('new'));$('historyTab').addEventListener('click',()=>switchView('history'));
-$('searchHistory').addEventListener('input',renderHistory);$('filterHistory').addEventListener('change',renderHistory);
-$('historyList').addEventListener('click',e=>{const b=e.target.closest('button[data-action]');if(!b)return;const r=getReports().find(x=>x.id===b.dataset.id);if(!r)return;if(b.dataset.action==='open'){fill(r);switchView('new')}else if(b.dataset.action==='pdf')printReport(r);else if(b.dataset.action==='delete'&&confirm(`Delete "${r.eventName}"? This cannot be undone.`)){setReports(getReports().filter(x=>x.id!==r.id));renderHistory()}});
-renderTemplate();updateCount();updateProgress();
-</script>
-</body></html>
+    <header>
+        <div class="logo">A</div>
+
+        <div>
+            <h1>After-Action Report Builder</h1>
+            <p>Event documentation · Review · Lessons learned</p>
+        </div>
+    </header>
+
+    <nav aria-label="Main navigation">
+        <button class="tab active" id="newTab">＋ New report</button>
+
+        <button class="tab" id="historyTab">
+            ▤ Report history <span id="historyCount"></span>
+        </button>
+    </nav>
+
+    <main>
+        <section id="editorView">
+
+            <div class="layout">
+                <div class="panel">
+                    <div class="panelhead">
+                        <h3 id="formTitle">New report</h3>
+                    </div>
+
+                    <div class="panelbody">
+                        <form id="aarForm">
+                            <div class="section">
+                                <div class="sectionhead">
+                                    1. Event information
+                                </div>
+
+                                <div class="sectionbody">
+                                    <div class="field">
+                                        <label for="template">
+                                            Event template *
+                                        </label>
+
+                                        <select id="template" required>
+                                            <option value="community">Community service</option>
+                                            <option value="football">Football game / sports event</option>
+                                            <option value="njrotc">NJROTC activity / detail</option>
+                                            <option value="competition">Competition / meet</option>
+                                            <option value="general">General event</option>
+                                        </select>
+
+                                        <div class="hint">
+                                            The template changes the questions
+                                            below to match your event.
+                                        </div>
+                                    </div>
+
+
+                                    <div class="field">
+                                        <label for="preparedBy">Report made by *</label>
+
+                                        <input
+                                            id="preparedBy"
+                                            list="namePool"
+                                            required
+                                            placeholder="Start typing a name"
+                                        >
+
+                                        <datalist id="namePool">
+                                            <option value="Liam Olguin">
+                                            <option value="John Smith">
+                                            <option value="Jane Doe">
+                                            <option value="Alex Johnson">
+                                        </datalist>
+                                    </div>
+
+
+                                    <div class="field">
+                                        <label for="eventName">Event name *</label>
+                                        <input
+                                            id="eventName"
+                                            required
+                                            placeholder="e.g., Homecoming football game"
+                                        >
+                                    </div>
+
+
+                                    <div class="twocol" style="margin-bottom: 20px;">
+                                        <div class="field">
+                                            <label for="eventDate">Event date *</label>
+                                            <input
+                                                id="eventDate"
+                                                type="date"
+                                                required
+                                            >
+                                        </div>
+
+                                        <div class="field">
+                                            <label for="location">Location</label>
+                                            <input
+                                                id="location"
+                                                placeholder="Venue or meeting point"
+                                            >
+                                        </div>
+                                        
+                                    </div>
+                                    
+
+                                
+
+                                    <div class="field">
+                                        <label for="participants">
+                                            Participants / team involved
+                                        </label>
+
+                                        <input
+                                            id="participants"
+                                            placeholder="People, teams, departments, or groups"
+                                        >
+                                    </div>
+
+                                    <div class="field">
+                                        <label for="missingParticipants">
+                                            Missing Participants
+                                        </label>
+
+                                        <input
+                                            id="missingParticipants"
+                                            placeholder="Participants who were expected but did not attend"
+                                        >
+                                    </div>
+
+                                    <div class="field">
+                                        <label for="extraParticipants">
+                                            Extra Participants
+                                        </label>
+
+                                        <input
+                                            id="extraParticipants"
+                                            placeholder="Participants who joined unexpectedly"
+                                        >
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="dynamicSections"></div>
+
+                            <div class="section">
+                                <div class="sectionhead">Final review</div>
+
+                                <div class="sectionbody">
+                                    <div class="field">
+                                        <label for="lessons">Lessons learned *</label>
+                                        <textarea
+                                            id="lessons"
+                                            required
+                                            placeholder="What should the team remember for next time?"
+                                        ></textarea>
+                                    </div>
+
+                                    <div class="field">
+                                        <label for="recommendations">
+                                            Recommendations / follow-up actions
+                                        </label>
+
+                                        <textarea
+                                            id="recommendations"
+                                            placeholder="What should change, who should follow up, and by when?"
+                                        ></textarea>
+                                    </div>
+
+                                    <div class="field">
+                                        <label for="overall">Overall assessment</label>
+
+                                        <select id="overall">
+                                            <option value="">Select an assessment</option>
+                                            <option>Exceeded expectations</option>
+                                            <option>Met expectations</option>
+                                            <option>Partially met expectations</option>
+                                            <option>Did not meet expectations</option>
+                                            <option>Not applicable</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="field">
+                                        <label for="additional">Additional notes</label>
+                                        <textarea
+                                            id="additional"
+                                            placeholder="Any other information worth recording"
+                                        ></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="no-print"
+                                style="display: flex; gap: 10px; flex-wrap: wrap;"
+                            >
+                                <button class="btn primary" type="submit">
+                                    Save report
+                                </button>
+
+                                <button
+                                    class="btn secondary"
+                                    type="button"
+                                    id="previewBtn"
+                                >
+                                    Print / save as PDF
+                                </button>
+
+                                <button
+                                    class="btn secondary"
+                                    type="button"
+                                    id="clearBtn"
+                                >
+                                    Clear form
+                                </button>
+                            </div>
+
+                            <p class="small">
+                                Reports are saved in this browser on this device.
+                                Clearing browser site data may remove them.
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="historyView" class="hidden">
+            <div class="hero">
+                <h2>Report history</h2>
+                <p>
+                    Browse, reopen, print, or remove reports saved in this browser.
+                </p>
+            </div>
+
+            <div class="panel">
+                <div class="panelbody">
+                    <div class="twocol" style="margin-bottom: 18px;">
+                        <div>
+                            <label for="searchHistory">Search reports</label>
+                            <input
+                                id="searchHistory"
+                                placeholder="Search event, author, location…"
+                            >
+                        </div>
+
+                        <div>
+                            <label for="filterHistory">Filter by template</label>
+
+                            <select id="filterHistory">
+                                <option value="">All event types</option>
+                                <option value="community">Community service</option>
+                                <option value="football">Football / sports</option>
+                                <option value="njrotc">NJROTC activity</option>
+                                <option value="competition">Competition / meet</option>
+                                <option value="general">General event</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="historyList"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        After-Action Report Builder · Local-first prototype for organizational use
+    </footer>
+
+    <script>
+        const STORAGE_KEY = 'aarBuilderReportsV1';
+
+        const templateNames = {
+            community: 'Community service',
+            football: 'Football game / sports event',
+            njrotc: 'NJROTC activity / detail',
+            competition: 'Competition / meet',
+            general: 'General event'
+        };
+
+        const schemas = {
+            community: [
+                {
+                    title: '2. Mission and service impact',
+                    fields: [
+                        [
+                            'objectives',
+                            'What were the goals of the service event?',
+                            'textarea',
+                            'Describe the intended impact.'
+                        ],
+                        [
+                            'work',
+                            'What work was completed?',
+                            'textarea',
+                            'Tasks completed, supplies distributed, area served, etc.'
+                        ],
+                        [
+                            'impact',
+                            'Who or what benefited, and what was the impact?',
+                            'textarea',
+                            'Include counts or measurable outcomes when known.'
+                        ],
+                        [
+                            'hours',
+                            'Volunteer hours / quantity served',
+                            'text',
+                            'e.g., 18 volunteers, 42 total hours, 200 lb of food'
+                        ]
+                    ]
+                },
+                {
+                    title: '3. Execution and coordination',
+                    fields: [
+                        [
+                            'coordination',
+                            'How well did planning, communication, and coordination work?',
+                            'textarea',
+                            'What helped the team work effectively?'
+                        ],
+                        [
+                            'resources',
+                            'Were supplies, transportation, and staffing sufficient?',
+                            'choice',
+                            ''
+                        ]
+                    ]
+                }
+            ],
+
+            football: [
+                {
+                    title: '2. Game overview and objectives',
+                    fields: [
+                        [
+                            'opponent',
+                            'Opponent / event matchup',
+                            'text',
+                            'Opponent or teams involved'
+                        ],
+                        [
+                            'result',
+                            'Final score / result',
+                            'text',
+                            'Optional; include only if relevant'
+                        ],
+                        [
+                            'objectives',
+                            'What were the team’s goals going into the event?',
+                            'textarea',
+                            'Performance, teamwork, execution, sportsmanship, or event support.'
+                        ],
+                        [
+                            'outcome',
+                            'How did the event compare with those goals?',
+                            'textarea',
+                            'Summarize the outcome and key factors.'
+                        ]
+                    ]
+                },
+                {
+                    title: '3. Performance and operations',
+                    fields: [
+                        [
+                            'successes',
+                            'What went well?',
+                            'textarea',
+                            'Preparation, communication, teamwork, execution, fan or event operations.'
+                        ],
+                        [
+                            'challenges',
+                            'What challenges or turning points occurred?',
+                            'textarea',
+                            'Focus on relevant facts and what the team learned.'
+                        ],
+                        [
+                            'sportsmanship',
+                            'Sportsmanship, safety, and conduct observations',
+                            'textarea',
+                            'Record notable positives or areas for improvement.'
+                        ]
+                    ]
+                }
+            ],
+
+            njrotc: [
+                {
+                    title: '2. Mission and execution',
+                    fields: [
+                        [
+                            'mission',
+                            'What was the mission or purpose of the activity?',
+                            'textarea',
+                            'What were cadets expected to accomplish?'
+                        ],
+                        [
+                            'execution',
+                            'How was the mission carried out?',
+                            'textarea',
+                            'Sequence of events, assigned roles, and execution.'
+                        ],
+                        [
+                            'personnel',
+                            'Personnel, leadership, and accountability',
+                            'textarea',
+                            'Attendance, role assignments, supervision, and coordination.'
+                        ]
+                    ]
+                },
+                {
+                    title: '3. Standards and performance',
+                    fields: [
+                        [
+                            'successes',
+                            'What went well?',
+                            'textarea',
+                            'Preparation, bearing, teamwork, drill, communication, etc.'
+                        ],
+                        [
+                            'challenges',
+                            'What issues or deviations occurred?',
+                            'textarea',
+                            'Document facts and corrective actions without unnecessary personal details.'
+                        ],
+                        [
+                            'resources',
+                            'Were equipment, uniforms, supplies, and time adequate?',
+                            'choice',
+                            ''
+                        ]
+                    ]
+                }
+            ],
+
+            competition: [
+                {
+                    title: '2. Competition objectives and results',
+                    fields: [
+                        [
+                            'eventDetails',
+                            'Competition, division, and events entered',
+                            'textarea',
+                            'List teams, categories, events, or divisions.'
+                        ],
+                        [
+                            'results',
+                            'Results / placements / scores',
+                            'textarea',
+                            'Record verified results if available.'
+                        ],
+                        [
+                            'objectives',
+                            'What were the goals, and how were they met?',
+                            'textarea',
+                            'Include preparation goals and performance targets.'
+                        ]
+                    ]
+                },
+                {
+                    title: '3. Team performance and preparation',
+                    fields: [
+                        [
+                            'strengths',
+                            'What skills or team practices worked well?',
+                            'textarea',
+                            'Preparation, consistency, strategy, teamwork, and execution.'
+                        ],
+                        [
+                            'gaps',
+                            'What needs more practice or support?',
+                            'textarea',
+                            'Identify specific skills, resources, or coordination gaps.'
+                        ],
+                        [
+                            'logistics',
+                            'How effective were travel, scheduling, equipment, and check-in?',
+                            'textarea',
+                            'What should be repeated or changed?'
+                        ]
+                    ]
+                }
+            ],
+
+            general: [
+                {
+                    title: '2. Objectives and execution',
+                    fields: [
+                        [
+                            'objectives',
+                            'What were the event’s objectives?',
+                            'textarea',
+                            'What was supposed to happen?'
+                        ],
+                        [
+                            'execution',
+                            'What happened during the event?',
+                            'textarea',
+                            'Summarize the major activities and sequence.'
+                        ],
+                        [
+                            'outcome',
+                            'What were the outcomes?',
+                            'textarea',
+                            'Include measurable results when possible.'
+                        ]
+                    ]
+                },
+                {
+                    title: '3. Evaluation',
+                    fields: [
+                        [
+                            'successes',
+                            'What went well?',
+                            'textarea',
+                            'What should be repeated?'
+                        ],
+                        [
+                            'challenges',
+                            'What did not go as planned?',
+                            'textarea',
+                            'Describe issues and their impact.'
+                        ],
+                        [
+                            'coordination',
+                            'How effective were communication and coordination?',
+                            'textarea',
+                            'What would improve execution next time?'
+                        ]
+                    ]
+                }
+            ]
+        };
+
+        let editingId = null;
+
+        const $ = id => document.getElementById(id);
+
+        function makeField(f) {
+            const [id, label, type, placeholder] = f;
+            let control = '';
+
+            if (type === 'textarea') {
+                control = `
+                    <textarea
+                        id="${id}"
+                        placeholder="${esc(placeholder)}"
+                    ></textarea>
+                `;
+            } else if (type === 'choice') {
+                control = `
+                    <div class="choices">
+                        <label class="choice">
+                            <input type="radio" name="${id}" value="Yes">
+                            Yes
+                        </label>
+
+                        <label class="choice">
+                            <input type="radio" name="${id}" value="Partly">
+                            Partly
+                        </label>
+
+                        <label class="choice">
+                            <input type="radio" name="${id}" value="No">
+                            No
+                        </label>
+
+                        <label class="choice">
+                            <input
+                                type="radio"
+                                name="${id}"
+                                value="Not applicable"
+                            >
+                            Not applicable
+                        </label>
+                    </div>
+                `;
+            } else {
+                control = `
+                    <input
+                        id="${id}"
+                        placeholder="${esc(placeholder)}"
+                    >
+                `;
+            }
+
+            return `
+                <div class="field">
+                    <label for="${id}">${esc(label)}</label>
+                    ${control}
+                </div>
+            `;
+        }
+
+        function renderTemplate() {
+            const t = $('template').value;
+
+            $('dynamicSections').innerHTML = schemas[t]
+                .map(s => `
+                    <div class="section">
+                        <div class="sectionhead">
+                            ${esc(s.title)}
+                        </div>
+
+                        <div class="sectionbody">
+                            ${s.fields.map(makeField).join('')}
+                        </div>
+                    </div>
+                `)
+                .join('');
+        }
+
+        function esc(s) {
+            return String(s ?? '').replace(/[&<>"']/g, c => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[c]));
+        }
+
+        function getReports() {
+            try {
+                return JSON.parse(
+                    localStorage.getItem(STORAGE_KEY) || '[]'
+                );
+            } catch {
+                return [];
+            }
+        }
+
+        function setReports(r) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(r));
+            updateCount();
+        }
+
+        function updateCount() {
+            $('historyCount').textContent = getReports().length
+                ? `(${getReports().length})`
+                : '';
+        }
+
+        function collect() {
+            const data = {};
+
+            [
+                'template',
+                'eventName',
+                'eventDate',
+                'location',
+                'preparedBy',
+                'organization',
+                'participants',
+                'lessons',
+                'recommendations',
+                'overall',
+                'additional'
+            ].forEach(id => {
+                data[id] = $(id).value;
+            });
+
+            schemas[data.template].forEach(s => {
+                s.fields.forEach(f => {
+                    const id = f[0];
+                    const radio = document.querySelector(
+                        `input[name="${id}"]:checked`
+                    );
+                    const el = $(id);
+
+                    data[id] = radio
+                        ? radio.value
+                        : (el ? el.value : '');
+                });
+            });
+
+            return data;
+        }
+
+        function fill(data) {
+            editingId = data.id || null;
+
+            renderTemplate();
+
+            Object.keys(data).forEach(id => {
+                const el = $(id);
+
+                if (el && el.type !== 'radio') {
+                    el.value = data[id] ?? '';
+                }
+
+                if (['resources'].includes(id)) {
+                    const r = document.querySelector(
+                        `input[name="${id}"][value="${CSS.escape(data[id] || '')}"]`
+                    );
+
+                    if (r) {
+                        r.checked = true;
+                    }
+                }
+            });
+
+            schemas[$('template').value].forEach(s => {
+                s.fields.forEach(f => {
+                    const id = f[0];
+
+                    const r = document.querySelector(
+                        `input[name="${id}"][value="${CSS.escape(data[id] || '')}"]`
+                    );
+
+                    if (r) {
+                        r.checked = true;
+                    }
+                });
+            });
+
+            $('formTitle').textContent = editingId
+                ? 'Edit report'
+                : 'New report';
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+
+            updateProgress();
+        }
+
+        function clearForm() {
+            editingId = null;
+
+            $('aarForm').reset();
+            $('template').value = 'community';
+
+            renderTemplate();
+
+            $('formTitle').textContent = 'New report';
+
+            updateProgress();
+        }
+
+        function switchView(which) {
+            const hist = which === 'history';
+
+            $('editorView').classList.toggle('hidden', hist);
+            $('historyView').classList.toggle('hidden', !hist);
+
+            $('newTab').classList.toggle('active', !hist);
+            $('historyTab').classList.toggle('active', hist);
+
+            if (hist) {
+                renderHistory();
+            }
+
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        function renderHistory() {
+            const query = $('searchHistory').value.toLowerCase();
+            const filter = $('filterHistory').value;
+
+            const arr = getReports()
+                .filter(r =>
+                    (!filter || r.template === filter) &&
+                    JSON.stringify([
+                        r.eventName,
+                        r.preparedBy,
+                        r.location,
+                        r.organization,
+                        templateNames[r.template]
+                    ]).toLowerCase().includes(query)
+                )
+                .sort((a, b) =>
+                    (b.updatedAt || '').localeCompare(a.updatedAt || '')
+                );
+
+            $('historyList').innerHTML = arr.length
+                ? arr.map(r => `
+                    <article class="historyitem">
+                        <h3>${esc(r.eventName || 'Untitled event')}</h3>
+
+                        <div class="meta">
+                            ${esc(templateNames[r.template] || 'Event')}
+                            · ${esc(r.eventDate || 'No date')}
+                            · Prepared by ${esc(r.preparedBy || 'Not specified')}
+                            ${r.location ? '· ' + esc(r.location) : ''}
+                        </div>
+
+                        <div class="historyactions">
+                            <button
+                                class="btn secondary"
+                                data-action="open"
+                                data-id="${esc(r.id)}"
+                            >
+                                Open / edit
+                            </button>
+
+                            <button
+                                class="btn secondary"
+                                data-action="pdf"
+                                data-id="${esc(r.id)}"
+                            >
+                                Print / PDF
+                            </button>
+
+                            <button
+                                class="btn danger"
+                                data-action="delete"
+                                data-id="${esc(r.id)}"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </article>
+                `).join('')
+                : `
+                    <div class="empty">
+                        <strong>No reports found</strong>
+                        Create and save a report to see it here.
+                    </div>
+                `;
+
+            updateCount();
+        }
+
+        function printReport(data) {
+            const win = window.open('', '_blank');
+
+            if (!win) {
+                alert('Please allow pop-ups to export/print the report.');
+                return;
+            }
+
+            const sections = schemas[data.template] || schemas.general;
+
+            let body = `
+                <h1>After-Action Report</h1>
+                <h2>${esc(data.eventName)}</h2>
+
+                <p>
+                    <b>Event type:</b> ${esc(templateNames[data.template])}
+                    &nbsp;
+                    <b>Date:</b> ${esc(data.eventDate)}
+                </p>
+
+                <p>
+                    <b>Location:</b> ${esc(data.location)}
+                    &nbsp;
+                    <b>Prepared by:</b> ${esc(data.preparedBy)}
+                </p>
+
+                <p>
+                    <b>Organization:</b> ${esc(data.organization)}
+                    &nbsp;
+                    <b>Participants:</b> ${esc(data.participants)}
+                </p>
+            `;
+
+            const labels = {};
+
+            document.querySelectorAll('label').forEach(l => {
+                if (l.htmlFor) {
+                    labels[l.htmlFor] = l.textContent;
+                }
+            });
+
+            const add = (title, ids) => {
+                body += `<h3>${esc(title)}</h3>`;
+
+                ids.forEach(id => {
+                    const label = labels[id] || id;
+
+                    body += `
+                        <p>
+                            <b>${esc(label)}</b><br>
+                            ${esc(data[id] || '—').replace(/\n/g, '<br>')}
+                        </p>
+                    `;
+                });
+            };
+
+            sections.forEach(s => {
+                add(s.title, s.fields.map(f => f[0]));
+            });
+
+            add('Final review', [
+                'lessons',
+                'recommendations',
+                'overall',
+                'additional'
+            ]);
+
+            win.document.write(`
+                <!doctype html>
+                <html>
+                <head>
+                    <title>${esc(data.eventName)} — AAR</title>
+
+                    <style>
+                        body {
+                            font: 14px Arial;
+                            max-width: 800px;
+                            margin: 36px auto;
+                            color: #202733;
+                            line-height: 1.5;
+                        }
+
+                        h1 {
+                            color: #183b63;
+                            border-bottom: 3px solid #2f6fed;
+                            padding-bottom: 10px;
+                        }
+
+                        h2 {
+                            margin-bottom: 4px;
+                        }
+
+                        h3 {
+                            background: #edf2f8;
+                            padding: 8px;
+                            margin-top: 24px;
+                        }
+
+                        p {
+                            margin: 12px 0;
+                        }
+
+                        @media print {
+                            body {
+                                margin: 15mm;
+                            }
+                        }
+                    </style>
+                </head>
+
+                <body>
+                    ${body}
+
+                    <script>
+                        window.onload = () => window.print();
+                    <\/script>
+                </body>
+                </html>
+            `);
+
+            win.document.close();
+        }
+
+        $('template').addEventListener('change', () => {
+            renderTemplate();
+            updateProgress();
+        });
+
+        $('aarForm').addEventListener('input', updateProgress);
+
+        function updateProgress() {
+            const required = [
+                $('eventName'),
+                $('eventDate'),
+                $('preparedBy'),
+                $('lessons')
+            ];
+
+            const filled = required.filter(e => e.value.trim()).length;
+            const pct = Math.round(filled / required.length * 100);
+
+            $('progressBar').style.width = pct + '%';
+
+            $('progressText').textContent =
+                `${filled} of ${required.length} required fields complete (${pct}%).`;
+        }
+
+        $('aarForm').addEventListener('submit', e => {
+            e.preventDefault();
+            saveReport();
+        });
+
+        function saveReport() {
+            if (!$('aarForm').reportValidity()) {
+                return;
+            }
+
+            const data = collect();
+            const arr = getReports();
+            const now = new Date().toISOString();
+
+            if (editingId) {
+                const i = arr.findIndex(r => r.id === editingId);
+
+                if (i >= 0) {
+                    arr[i] = {
+                        ...arr[i],
+                        ...data,
+                        updatedAt: now
+                    };
+                } else {
+                    arr.unshift({
+                        ...data,
+                        id: editingId,
+                        createdAt: now,
+                        updatedAt: now
+                    });
+                }
+            } else {
+                data.id = crypto.randomUUID
+                    ? crypto.randomUUID()
+                    : String(Date.now());
+
+                data.createdAt = now;
+                data.updatedAt = now;
+
+                arr.unshift(data);
+                editingId = data.id;
+            }
+
+            $('formTitle').textContent = 'Report saved';
+
+            setReports(arr);
+
+            alert('Report saved in this browser.');
+        }
+
+        $('saveDraftBtn').addEventListener('click', () => {
+            const data = collect();
+
+            if (!data.eventName.trim()) {
+                alert('Add an event name before saving a draft.');
+                return;
+            }
+
+            const arr = getReports();
+            const now = new Date().toISOString();
+
+            if (editingId) {
+                const i = arr.findIndex(r => r.id === editingId);
+
+                if (i >= 0) {
+                    arr[i] = {
+                        ...arr[i],
+                        ...data,
+                        updatedAt: now
+                    };
+                } else {
+                    arr.unshift({
+                        ...data,
+                        id: editingId,
+                        createdAt: now,
+                        updatedAt: now
+                    });
+                }
+            } else {
+                data.id = crypto.randomUUID
+                    ? crypto.randomUUID()
+                    : String(Date.now());
+
+                data.createdAt = now;
+                data.updatedAt = now;
+
+                arr.unshift(data);
+                editingId = data.id;
+            }
+
+            setReports(arr);
+
+            alert('Draft saved locally.');
+        });
+
+        $('previewBtn').addEventListener('click', () => {
+            const d = collect();
+
+            if (!d.eventName.trim()) {
+                alert('Enter an event name before exporting.');
+                return;
+            }
+
+            printReport({
+                ...d,
+                id: editingId
+            });
+        });
+
+        $('clearBtn').addEventListener('click', () => {
+            if (confirm('Clear the current form? Unsaved changes will be lost.')) {
+                clearForm();
+            }
+        });
+
+        $('newTab').addEventListener('click', () => {
+            switchView('new');
+        });
+
+        $('historyTab').addEventListener('click', () => {
+            switchView('history');
+        });
+
+        $('searchHistory').addEventListener('input', renderHistory);
+        $('filterHistory').addEventListener('change', renderHistory);
+
+        $('historyList').addEventListener('click', e => {
+            const b = e.target.closest('button[data-action]');
+
+            if (!b) {
+                return;
+            }
+
+            const r = getReports().find(x => x.id === b.dataset.id);
+
+            if (!r) {
+                return;
+            }
+
+            if (b.dataset.action === 'open') {
+                fill(r);
+                switchView('new');
+            } else if (b.dataset.action === 'pdf') {
+                printReport(r);
+            } else if (
+                b.dataset.action === 'delete' &&
+                confirm(`Delete "${r.eventName}"? This cannot be undone.`)
+            ) {
+                setReports(getReports().filter(x => x.id !== r.id));
+                renderHistory();
+            }
+        });
+
+        renderTemplate();
+        updateCount();
+        updateProgress();
+    </script>
+</body>
+</html>
