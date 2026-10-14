@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ !DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -6,13 +6,13 @@
 <title>After-Action Report Builder</title>
     <style>
         :root {
-            --navy: #183b63;
-            --blue: #2f6fed;
-            --bg: #f4f6fa;
+            --navy: #07274b;
+            --blue: #e59109fe;
+            --bg: #cbc3c2;
             --ink: #202733;
-            --muted: #667085;
-            --line: #dce2eb;
-            --card: #fff;
+            --muted: #000000;
+            --line: #000000;
+            --card: #edebeb;
             --green: #18845b;
         }
 
@@ -30,7 +30,7 @@
 
         header {
             background: var(--navy);
-            color: #fff;
+            color:  #e29d1b;
             padding: 20px max(20px, calc((100vw - 1000px) / 2));
             display: flex;
             align-items: center;
@@ -56,7 +56,7 @@
 
         header p {
             margin: 3px 0 0;
-            color: #d9e5f5;
+            color: #babcba;
             font-size: 13px;
         }
 
@@ -86,9 +86,9 @@
             z-index: 100;
             max-height: 260px;
             overflow-y: auto;
-            background: white;
-            color: #222;
-            border: 1px solid #ccc;
+            background: rgb(255, 255, 255);
+            color: #393333;
+            border: 1px solid #040404;
             border-radius: 8px;
             margin-top: 4px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
@@ -107,7 +107,7 @@
         }
 
         .participant-option:hover {
-            background: #f0f4f8;
+            background: #c4c4d1;
         }
 
         .participant-option input {
@@ -126,16 +126,16 @@
         .selected-participants {
             margin-top: 8px;
             font-size: 0.9rem;
-            color: #555;
+            color: #218d1b;
         }
 
         .tab {
             border: 1px solid var(--line);
-            background: #fff;
+            background: #027e21;
             border-radius: 9px;
             padding: 10px 15px;
             font-weight: 700;
-            color: #344054;
+            color: #fefefe;
             cursor: pointer;
         }
 
@@ -203,7 +203,7 @@
         }
 
         .sectionhead {
-            background: #f9fafc;
+            background: #c1bebe;
             padding: 13px 17px;
             border-bottom: 1px solid var(--line);
             font-weight: 700;
@@ -225,10 +225,10 @@
         textarea {
             font: inherit;
             width: 100%;
-            border: 1px solid #cbd3df;
+            border: 1px solid #000000;
             border-radius: 7px;
             padding: 11px 12px;
-            background: #fff;
+            background: rgb(248, 247, 247);
             color: var(--ink);
         }
 
