@@ -576,7 +576,8 @@
 
             <div class="no-print" style="display:flex;gap:10px;flex-wrap:wrap">
               <button class="btn primary" type="submit">Save report</button>
-              <button class="btn secondary" type="button" id="previewBtn">Print / save as PDF</button>
+              <button class="btn secondary" type="button" id="previewBtn">Print</button>
+              <button class="btn secondary" type="button" id="downloadPdfBtn">Download PDF</button>
               <button class="btn secondary" type="button" id="clearBtn">Clear form</button>
             </div>
             <p class="small">Reports are saved in this browser on this device. Clearing browser site data may remove them.</p>
@@ -605,6 +606,7 @@
 </main>
 <footer>After-Action Report Builder · Local-first prototype for organizational use</footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 const STORAGE_KEY = 'aarBuilderReportsV1';
 const templateNames = {
@@ -806,6 +808,8 @@ function createCadetDropdown(container) {
   clear.addEventListener('click', () => { selectedCadets.clear(); updateSelection(); dropdown.hidden = false; });
   document.addEventListener('click', event => { if (!picker.contains(event.target)) dropdown.hidden = true; });
   container._resetSelection = () => { selectedCadets.clear(); search.value = ''; updateSelection(); dropdown.hidden = true; };
+  // Keep selected cadet names as an array. Names contain commas, so do not split a text field on commas.
+  container._getSelection = () => cadetNames.filter(name => selectedCadets.has(name));
   container._setSelection = values => {
     selectedCadets.clear();
     (Array.isArray(values) ? values : String(values || '').split(', ')).forEach(name => { if (cadetNames.includes(name)) selectedCadets.add(name); });
@@ -841,7 +845,10 @@ function collect() {
   const data = {};
   ['template','eventName','eventDate','location','preparedBy','serviceCadets','serviceDuration','additionalHours','totalServiceHours','additional'].forEach(id => data[id] = $(id).value);
   ['participants','missingParticipants','extraParticipants','leavingParticipants'].forEach(id => {
-    data[id] = $(id).value.split(', ').filter(Boolean);
+    const container = document.querySelector(`.cadet-dropdown[data-id="${id}"]`);
+    data[id] = container && container._getSelection
+      ? container._getSelection()
+      : [];
   });
   return data;
 }
@@ -895,7 +902,8 @@ function renderHistory() {
       <div class="meta">${esc(templateNames[r.template] || 'Event')} · ${esc(r.eventDate || 'No date')} · Prepared by ${esc(r.preparedBy || 'Not specified')} ${r.location ? '· ' + esc(r.location) : ''} · ${esc(r.totalServiceHours ?? 0)} community-service hours</div>
       <div class="historyactions">
         <button class="btn secondary" data-action="open" data-id="${esc(r.id)}">Open / edit</button>
-        <button class="btn secondary" data-action="pdf" data-id="${esc(r.id)}">Print / PDF</button>
+        <button class="btn secondary" data-action="pdf" data-id="${esc(r.id)}">Print</button>
+        <button class="btn secondary" data-action="download" data-id="${esc(r.id)}">Download PDF</button>
         <button class="btn danger" data-action="delete" data-id="${esc(r.id)}">Delete</button>
       </div>
     </article>`).join('') : '<div class="empty"><strong>No reports found</strong>Create and save a report to see it here.</div>';
@@ -929,16 +937,126 @@ function printReport(data) {
   </style></head><body>${body}<script>window.onload=()=>window.print();<\/script></body></html>`);
   win.document.close();
 }
+
+function downloadReportPdf(data) {
+  if (!data.eventName || !data.eventName.trim()) {
+    alert('Enter an event name before downloading the PDF.');
+    return;
+  }
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert('The PDF library could not load. Check your internet connection and try again, or use Print.');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 18;
+  const usableWidth = pageWidth - margin * 2;
+  let y = 20;
+
+  function ensureSpace(height = 8) {
+    if (y + height > pageHeight - margin) {
+      doc.addPage();
+      y = 20;
+    }
+  }
+  function heading(text, size = 13) {
+    ensureSpace(12);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(size);
+    doc.setTextColor(24, 59, 99);
+    doc.text(text, margin, y);
+    y += 7;
+  }
+  function line(label, value) {
+    const text = `${label}: ${value === undefined || value === null || value === '' ? '—' : value}`;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(32, 39, 51);
+    const wrapped = doc.splitTextToSize(text, usableWidth);
+    ensureSpace(wrapped.length * 5 + 2);
+    doc.text(wrapped, margin, y);
+    y += wrapped.length * 5 + 2;
+  }
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(20);
+  doc.setTextColor(24, 59, 99);
+  const titleLines = doc.splitTextToSize('After-Action Report', usableWidth);
+  doc.text(titleLines, margin, y);
+  y += titleLines.length * 8 + 2;
+  doc.setDrawColor(47, 111, 237);
+  doc.setLineWidth(1);
+  doc.line(margin, y, pageWidth - margin, y);
+  y += 8;
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(15);
+  doc.setTextColor(32, 39, 51);
+  const eventLines = doc.splitTextToSize(data.eventName || 'Untitled event', usableWidth);
+  ensureSpace(eventLines.length * 7 + 2);
+  doc.text(eventLines, margin, y);
+  y += eventLines.length * 7 + 2;
+
+  heading('Event information');
+  line('Event type', templateNames[data.template] || 'Event');
+  line('Event date', data.eventDate);
+  line('Location', data.location);
+  line('Prepared by', data.preparedBy);
+
+  heading('Participant information');
+  const participantFields = [
+    ['Participants', data.participants],
+    ['Missing participants', data.missingParticipants],
+    ['Extra participants', data.extraParticipants],
+    ['Participants who left early', data.leavingParticipants]
+  ];
+  participantFields.forEach(([label, values]) => {
+    line(label, Array.isArray(values) && values.length ? values.join(', ') : '—');
+  });
+  line('Number of participating cadets', data.serviceCadets || 0);
+
+  heading('Community-service hours');
+  line('Service duration per cadet', `${data.serviceDuration || 0} hours`);
+  line('Additional hours', data.additionalHours || 0);
+  ensureSpace(10);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(25, 135, 84);
+  doc.text(`Total community-service hours: ${data.totalServiceHours || 0}`, margin, y);
+  y += 9;
+
+  if (data.additional) {
+    heading('Additional notes');
+    line('Notes', data.additional);
+  }
+
+  const safeName = (data.eventName || 'after-action-report')
+    .replace(/[<>:"/\\|?*\x00-\x1F]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .slice(0, 70) || 'after-action-report';
+  doc.save(`${safeName}-AAR.pdf`);
+}
+
 $('aarForm').addEventListener('submit', event => { event.preventDefault(); saveReport(); });
 $('previewBtn').addEventListener('click', () => {
   const data = collect();
-  if (!data.eventName.trim()) { alert('Enter an event name before exporting.'); return; }
+  if (!data.eventName.trim()) { alert('Enter an event name before printing.'); return; }
   printReport(data);
 });
+$('downloadPdfBtn').addEventListener('click', () => downloadReportPdf(collect()));
 $('clearBtn').addEventListener('click', () => {
   if (confirm('Clear the current form? Unsaved changes will be lost.')) clearForm();
 });
-$('newTab').addEventListener('click', () => switchView('new'));
+$('newTab').addEventListener('click', () => {
+  // Confirm before replacing the current report, including an unsaved draft.
+  if (!confirm('Create a new report and discard the current report? Any unsaved changes will be lost.')) return;
+  clearForm();
+  switchView('new');
+});
 $('historyTab').addEventListener('click', () => switchView('history'));
 $('searchHistory').addEventListener('input', renderHistory);
 $('filterHistory').addEventListener('change', renderHistory);
@@ -947,6 +1065,7 @@ $('historyList').addEventListener('click', event => {
   const report = getReports().find(item => item.id === button.dataset.id); if (!report) return;
   if (button.dataset.action === 'open') fill(report);
   else if (button.dataset.action === 'pdf') printReport(report);
+  else if (button.dataset.action === 'download') downloadReportPdf(report);
   else if (button.dataset.action === 'delete' && confirm(`Delete "${report.eventName}"? This cannot be undone.`)) {
     setReports(getReports().filter(item => item.id !== report.id)); renderHistory();
   }
